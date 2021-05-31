@@ -1682,11 +1682,11 @@ https://www.baidu.com
         if(scForm.method=='get'){
             switch(scForm.f){
                 case 'mr':
-                    window.open(scEngData[scForm.index].url.replace('%s',scInput.value),'_blank');
+                    window.open(scEngData[scForm.index].url.replace('%s',scInput.value),'_self');
                     return false;
                     break;
                 case 'cs':
-                    window.open(scForm.url.replace(/%s|test/g,scInput.value),'_blank');
+                    window.open(scForm.url.replace(/%s|test/g,scInput.value),'_self');
                     return false;
             }
         }
