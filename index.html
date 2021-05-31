@@ -106,7 +106,7 @@ input::-webkit-input-placeholder {
 
 .scPosition {
     position: fixed;
-    top: 220px; /*搜索框高度 77*/
+    top: 195px; /*搜索框高度 77*/
     left: 50%;
     transform: translate(-50%, 0);
     /*height: 100%;*/
@@ -545,7 +545,7 @@ input[type=range]::-ms-fill-upper {
 
 #bookmarker{
     position: absolute;
-    top: 400px; /*书签栏高度 270*/
+    top: 360px; /*书签栏高度 270*/
     left: 50%;
     transform: translate(-50%, 0);
     width: 84%;
@@ -951,6 +951,7 @@ https://www.baidu.com
             <input id="topHeight" type="range" min="0" max="100" step=".1" value="10">
             <input id="markHeight" type="range" min="0" max="100" step=".1" value="10" style="display: none;">
             <h1>自定义css</h1>
+            <!-- <h1 onclick="window.open('https://support.qq.com/product/175314','_blank')">讨论区</h1> -->
             <textarea id="csstext" style="height: 70vh;" spellcheck="false"></textarea>
         </div>
         <script>
@@ -1033,6 +1034,7 @@ https://www.baidu.com
 
         <div id="more" class="adjust">
             <h1>自定义js</h1>
+            <!-- <h1>讨论区</h1> -->
             <textarea style="margin-bottom: 20px;" id="jstext" spellcheck="false"></textarea>
 
             <span id="autoChangeDiv" class="inputDiv" style="transition: 0s;">自动切换主题</span>
@@ -1169,6 +1171,7 @@ https://www.baidu.com
                     this.classList.remove('autoChecked');
                     jstext.index='1';
                     more.getElementsByTagName('h1')[0].innerHTML='自定义js';
+                    // more.getElementsByTagName('h1')[1].innerHTML='讨论区';
 
                     jstext.placeholder='';
                     jstext.value=localStorage.customJS?localStorage.customJS:'';
