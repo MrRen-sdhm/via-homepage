@@ -1,0 +1,11 @@
+https://www.google.com/
+谷歌搜索
+
+https://www.zhihu.com/billboard
+知乎热榜
+
+https://top.baidu.com/board?platform=wise&tab=realtime
+百度热搜
+
+https://s.weibo.com/top/summary
+微博热搜
