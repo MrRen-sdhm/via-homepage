@@ -1,0 +1,2346 @@
+<!DOCTYPE html>
+<html><head>
+	<meta name="author" content="酷安@HiEarth">
+	<meta name="revised" content="2020/11/6">
+	<meta name="gx" content="增加自定义搜索引擎">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=10.0,user-scalable=0">
+	<title>SoFast</title>
+	<link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+	<base target="_blank">
+<style>
+/*
+1.如遇问题请尝试ctrl+shift+i>应用程序>本地存储>右击删除customCSS>刷新;
+2.清空内容恢复默认*/
+
+
+*,
+*:before,
+*:after {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	font-family: 'Arial';
+	/*transition: .4s;*/
+}
+
+#customPage::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.suggest::-webkit-scrollbar {
+	display: none;
+}
+
+#customPage,
+html,body,
+.suggest{
+	scrollbar-width: none;
+}
+
+.choiceUl,
+.inputDiv{
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+html,body {
+	width: 100%;
+	height: 100%;
+	overscroll-behavior-y: contain;
+}
+
+body{
+	background-color: #f2f2f2;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.dark {
+	background-color: #242424;
+}
+
+input::-webkit-input-placeholder {
+	color: #343434;
+}
+
+#bgImg{
+	position: fixed;
+	top: 0;
+	left: 50%;
+	transform: translate(-50%,0);
+	z-index: -99;
+	transition: .4s;
+}
+
+.logoPart {
+	display: none;
+	text-align: center;
+	margin-bottom: 60px;
+	transition: none;
+}
+
+.show {
+	display: block;
+}
+
+.logo {
+	height: 40px;
+}
+
+.logo svg {
+	height: 40px;
+	max-width: 150px;
+}
+
+.logo img {
+	width: 80px;
+	max-width: 80px;
+	border-radius: 50%;
+	min-width: 80px;
+	height: 80px;
+	min-height: 80px;
+	object-fit: cover;
+	max-height: 80px;
+}
+
+.scPosition {
+	position: fixed;
+	top: 77px;
+	left: 50%;
+	transform: translate(-50%, 0);
+	width: 84%;
+	max-width: 760px;
+	z-index: 10;
+}
+
+.scBg {
+	position: relative;
+	height: 50px;
+	border-radius: 100px;
+	overflow: visible;
+	background-color: #fff;
+	background-color: rgba(255, 255, 255, 0.25);
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 10px;
+    backdrop-filter: blur(10px);
+	transition: background .4s;
+}
+
+.scBg:hover {
+	/*box-shadow: 0 -5px 20px 0px #fbfbfb,
+				0 10px 20px 0px #c1c5cd;
+	transform: translateY(-5px);*/
+}
+
+.dark .scBg {
+	background-color: #404040;
+	/*box-shadow: 0 5px 15px 5px rgba(34, 34, 34, .5);*/
+}
+
+#scInput {
+	float: left;
+	width: 100%;
+	height: 50px;
+	padding: 0 50px;
+	font-size: 16px;
+	border: none;
+	outline: none;
+	color: #343434;
+	caret-color: #343434;
+	background: transparent;
+}
+
+.dark #scInput {
+	color: #999;
+	caret-color: #999;
+}
+
+#scSubmit {
+	position:absolute;
+	top: 5px;
+	right: 5px;
+	width: 40px;
+	height: 40px;
+	border: none;
+	outline: none;
+	border-radius: 100px;
+	background: transparent;
+	cursor: pointer;
+}
+
+#scSubmit:active {
+	background-color: #efefef;
+}
+
+.dark #scSubmit:active {
+	background-color: #505050;
+}
+
+#scSubmit svg{
+	position:absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	height: 24px;
+}
+
+.scChoiceFZ {
+	position: absolute;
+	left: -5px;
+	top: -5px;
+	width: 55px;
+	height: 60px;
+	z-index: 9;
+	cursor: pointer;
+}
+
+.scChoice {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width: 40px;
+	height: 40px;
+	border-radius: 100px;
+}
+
+.scChoice p{
+	text-align: center;
+	line-height: 40px;
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.scChoiceFZ:active .scChoice {
+	background-color: #efefef;
+}
+
+.dark .scChoiceFZ:active .scChoice {
+	background-color: #505050;
+}
+
+
+.scChoice svg {
+	/*position:relative;
+	left: 50%;
+	top: 50%;*/
+	margin-left: 50%;
+	margin-top: 50%;
+	transform: translate(-50%, -50%);
+	height: 24px;
+}
+
+.choiceUl {
+	display: none;
+	position: absolute;
+	top: 55px;
+	left: 25px;
+	z-index: 100;
+	width: 240px;
+	padding: 10px;
+	border-radius: 8px;
+	background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 10px;
+	list-style: none;
+}
+
+.dark .choiceUl {
+	background-color: #404040;
+	/*box-shadow: 0 10px 20px 0 rgba(48, 48, 48, .5);*/
+}
+
+@keyframes popin {
+	0% {
+	transform: scale3d(0, 0, 0);
+	opacity: 0;
+	transform-origin: 0 0 0;
+	}
+	100% {
+	transform: scale3d(1, 1, 1);
+	opacity: 1;
+	transform-origin: 0 0 0;
+	}
+}
+
+.choiceUl li {
+	display: inline-block;
+	float: left;
+	height: 30px;
+	width: 30px;
+	border-radius: 30px;
+	margin-left: 6px;
+	font-size: 14px;
+	cursor: pointer;
+	color: #343434;
+	background-color: #F8F8F8;
+}
+
+.dark .choiceUl li {
+	color: #999;
+	background-color: #505050;
+}
+
+.choiceUl li:active {
+	background-color: #ccc;
+}
+
+.choiceUlend {
+	display: none;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	z-index: 9;
+}
+
+.suggest {
+	position: absolute;;
+	top: 51px;
+	width: -webkit-calc(100% - 70px);
+	width: -moz-calc(100% - 70px);
+	width: calc(100% - 70px);
+	max-height: 186px;
+	margin: 0 35px;
+	border-radius: 0 0 8px 8px;
+	overflow: auto;
+	background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 10px;
+}
+
+.dark .suggest {
+	background-color: #404040;
+	/*box-shadow: 0 10px 20px 0 rgba(48, 48, 48, .5);*/
+}
+
+.suggest ul {
+	list-style: none;
+}
+
+.suggest ul li {
+	font-size: 0.83rem;
+	line-height: 31px;
+	padding: 0 15px;
+	cursor: pointer;
+}
+
+.dark .suggest ul li {
+	color: #999;
+}
+
+.suggest ul li:hover {
+	background-color: #efefef;
+}
+
+.dark .suggest ul li:hover {
+	background-color: #666;
+}
+
+.clear {
+	display: none;
+	position: absolute;
+	top: 0px;
+	right: 50px;
+	width: 50px;
+	height: 50px;
+}
+.clear svg{
+	height: 24px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.control {
+	position: fixed;
+	bottom: 10px;
+	z-index: 9;
+	width: 100%;
+	height: 50px;
+}
+
+.controlTop {
+	position: fixed;
+	bottom: 10px;
+	z-index: 8;
+	width: 100%;
+	height: 100%;
+}
+
+
+#customPage {
+	display: none;/*
+	overflow: auto;*/
+	background-color: rgba(248, 248, 248, 0.95);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+	#customPage {
+		background-color: rgba(248, 248, 248, .1);
+		-webkit-backdrop-filter: blur(25px);
+		backdrop-filter: blur(25px);
+	}
+}
+
+.dark #customPage {
+	display: none;
+	background-color:rgba(48,48,48,.95);
+}
+
+@keyframes showCustomPC {
+	0% {
+		transform: translate3d(100%,0,0);
+		opacity: 0;
+	}/*
+	80% {
+		transform: translate3d(-10%,0,0);
+		opacity: 0.9;
+	}*/
+	100% {
+		transform: translate3d(0,0,0);
+		opacity: 1;
+	}
+}
+
+.customPagePC{
+	display: none;
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	width: 259px;
+	height: calc(100% - 60px);
+	animation: 475ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s 1 normal none running showCustomPC;
+	z-index: 99999;
+	margin: 30px;
+	border-radius: 15px;
+	overflow: auto;
+}
+
+.customPagePh{
+	display: none;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 0px;
+	z-index:99999;
+	border-radius:8px 8px 0 0;
+}
+
+.inputDiv{
+	display: inline-block;
+	height: 40px;
+	min-width: 40px;
+	margin: 0 10px 15px 0;
+	padding: 0 5px 0;
+	border-radius: 40px;
+	font-size: 14px;
+	line-height: 40px;
+	text-align: center;
+	cursor: pointer;
+	color: #fff;
+	background-color: rgba(102, 102, 102, 0.56);
+}
+
+.inputDiv:last-child{
+	margin: 0 0 15px 0;
+}
+
+.dark .inputDiv {
+	color: #999;
+}
+
+.autoChecked{
+	color: #666;
+	background-color: #fff;
+}
+
+input[type='range'] {
+	-webkit-appearance: none;
+	width: 100%;
+	height: 35px;
+	padding: 0;
+	border-radius: 25px;
+	/*transform: rotate(-90deg);*/
+	border: none;
+	outline: none;
+	overflow: hidden;
+	-webkit-tap-highlight-color: transparent;
+	background-color: transparent;
+}
+
+input[type='range']:focus {
+	outline: none;
+}
+
+ /*chrome、safari浏览器*/
+input[type='range']::-webkit-slider-runnable-track{
+	position: relative;
+	height: 13px;
+	border-radius: 13px;
+	background-color: rgba(197,197,197,.45);
+}
+/*firefox浏览器*/
+input[type='range']::-moz-range-track{
+	height: 25px;
+	border-radius: 40px;
+	background-color: #bfc4c5;
+}
+/*IE浏览器*/
+input[type="range"]::-ms-track{
+	height: 25px;
+	border-radius: 40px;
+	border: none;
+	background-color: #bfc4c5;
+}
+
+ /*chrome、safari浏览器*/
+input[type="range"]::-webkit-slider-thumb {
+	position: relative;
+	top: 50%;
+	transform: translate(0,-50%);
+	-webkit-appearance: none;
+	height: 30px;
+	width: 30px;
+	border-radius: 30px;
+	background-color: #fff;
+	box-shadow: 0 1px 3px 0px rgba(109,109,109,.53);
+	cursor: pointer;
+}
+/*firefox 浏览器设置*/
+input[type='range']::-moz-range-thumb {
+	border: none;
+	background: transparent;
+	cursor: pointer;
+}
+/*IE浏览器设置*/
+input[type='range']::-ms-thumb {
+	width: 0;
+	border: none;
+	background: transparent;
+	box-shadow: none;
+	cursor: pointer;
+}
+
+/*firefox浏览器已填充部分*/
+input[type=range]::-moz-range-progress {
+	height: 25px;
+	background-color: #fff;
+	border-radius: 40px 0 0 40px;
+}
+/*IE浏览器*/
+/*滑道已填充的部分*/
+input[type=range]::-ms-fill-lower {
+	height: 25px;
+	background-color: #fff;
+	border-radius: 40px 0 0 40px;
+}
+/*滑道未填充的部分*/
+input[type=range]::-ms-fill-upper {
+	height: 25px;
+	background: transparent;
+	border-radius: 40px 0 0 40px;
+}
+
+#bookmarker{
+	position: absolute;
+	top: 270px;
+	left: 50%;
+	transform: translate(-50%, 0);
+	width: 84%;
+	max-width: 760px;
+	padding: 0 auto;
+	z-index: 9;
+	/*background-color: #ccc;*/
+	display: flex;
+	flex-flow: row wrap;
+	/*padding-bottom: 100px;*/
+}
+
+#bookmarker span{
+	display: inline-block;
+	height: 40px;
+	width: 60px;
+	min-width: 40px;
+	max-width: 80px;
+	margin: 8px auto;
+	padding: 0 5px;
+	border-radius: 40px;
+	font-size: 12px;
+	line-height: 40px;
+	text-align: center;
+	overflow: hidden;
+	/*white-space: nowrap;*/
+	text-overflow: ellipsis;
+	cursor: pointer;
+	color: #333;
+	background-color: rgba(255, 255, 255, 0.56);
+}
+
+.dark #bookmarker span{
+	color: #999;
+	background-color: rgba(102, 102, 102, 0.56);
+}
+
+#bookmarker a{
+	width: 25%;
+	text-align: center;
+}
+
+@media only screen and (max-width: 2560px) {
+	#bookmarker a{
+	width: 10%;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	#bookmarker a{
+	width: 20%;
+	}
+}
+
+@media only screen and (max-width: 425px) {
+	#bookmarker a{
+	width: 25%;
+	}
+}
+
+
+</style>
+</head>
+<body class="">
+	<img id="bgImg">
+	<div class="scPosition" style="display: none;">
+		<div class="logoPart"><p><a class="logo">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 58.4 44.55"><g><g><path class="cls-1 cls-2" d="M22,44.53C42,44.53,58.4,37,58.4,16.91h0A17,17,0,0,0,41.4,0H16.27A16.27,16.27,0,0,0,0,16.37H0l19.31-.05A14.06,14.06,0,0,1,33.4,30.38h0A14.11,14.11,0,0,1,19.29,44.55Z"></path></g></g></svg>
+		</a></p></div>
+		<div class="scBg">
+			<div class="scChoiceFZ" title="切换搜索引擎">
+				<div class="scChoice"></div>
+			</div>
+			<ul class="choiceUl">
+				<div id="mrScEng"></div>
+				<dir id="customEngDivId"></dir>
+			</ul>
+
+			<form id="scForm" action="https://quark.sm.cn/s" method="get" target="_blank">
+
+				<input id="scInput" type="text" name="q" autocomplete="off">
+
+				<button id="scSubmit" type="submit">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 264 264"><g><g><path class="cls-1 cls-2" d="M132,0a132,132,0,1,0,52.5,253.15c9.51-4.13,32.64,9.67,40.83,3.52s1.46-32.24,8-40.1A132,132,0,0,0,132,0Zm-.67,199.33A67.33,67.33,0,1,1,198.67,132,67.33,67.33,0,0,1,131.33,199.33Z"></path></g></g></svg>
+				</button>
+
+			</form>
+			<div class="clear">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72"><defs><style>.cls-22{fill:none;stroke:#666;stroke-linecap:round;stroke-miterlimit:10;stroke-width:8px;}</style></defs><g><g><line class="cls-22" x1="21.85" y1="21.85" x2="50.15" y2="50.15"></line><line class="cls-22" x1="50.39" y1="21.61" x2="21.61" y2="50.39"></line></g></g></svg>
+			</div>
+			<div class="suggest">
+				<ul id="searchResult"></ul>
+			</div>
+			<div id="suggestScript" style="display: none">
+			</div>
+		</div>
+	</div>
+	<span id="bookmarker"></span>
+
+	<div class="control" title="双击/右击"></div>
+	<div class="controlTop" title="双击/右击"></div>
+	<div class="choiceUlend" style="display: none;"></div>
+	<div id="customPageMask" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"></div>
+
+	<div id="customPage">
+		<div id="customPageReceptor" style="position: absolute;z-index: -99;width: 100%;height: 100%;"></div>
+		<div id="customPage1">
+			<div style="width: 84%;margin: 20px 8% 0;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;">
+				<input id="bgInput" type="file" accept="image/*" style="display:none;">
+				<input id="logoInput" type="file" accept="image/*" style="display:none;">
+				<span id="logoInputDiv" class="inputDiv" title="右击取消">logo</span>
+				<span id="bgInputDiv" class="inputDiv" title="右击取消">背景</span>
+				<span id="ImpURLDiv" class="inputDiv">书签</span>
+				<span id="adjustDiv" class="inputDiv">调节</span>
+				<span id="moreDiv" class="inputDiv">更多</span>
+			</div>
+
+		</div>
+	<script id="customJS"></script>
+		<script type="text/javascript">
+
+		var bgInputDiv = document.getElementById("bgInputDiv");
+		var bgInput =  document.getElementById("bgInput");
+		bgInputDiv.onclick = function(){
+			bgInput.value='';
+			bgInput.click();
+		}
+
+		bgInput.onchange = function(){
+			var file = this.files[0];
+			if (window.FileReader){
+				var reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload = function (e) {
+					bgImg.src=""+e.target.result+"";
+					autoBgSize(e.target.result);
+					localStorage.setItem('bgImg',""+e.target.result+"");
+				};
+			}
+		};
+
+		var logoInputDiv = document.getElementById("logoInputDiv");
+		var logoInput = document.getElementById("logoInput");
+		logoInputDiv.onclick = function(){
+			logoInput.value='';
+			logoInput.click();
+		}
+		logoInput.onchange = function(){
+			var file = this.files[0];
+			if (window.FileReader) {
+				var reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload = function (e) {
+					// console.log(e.target.result);
+					logo.innerHTML="<img src="+e.target.result+">";
+					localStorage.setItem('logoImg',""+e.target.result+"");
+
+					logoNow=logo.innerHTML;
+				};
+			}
+		};
+
+		function autoBgSize(t){
+			var img = new Image();
+			img.src = t;
+			img.onload=function(){
+				var w=img.width;
+				var h=img.height;
+				var bodyWidth = document.body.offsetWidth;
+				var bodyHeight = document.body.offsetHeight;
+				if(bodyWidth/bodyHeight>w/h){
+					bgImg.width=""+bodyWidth+"";
+					bgImg.removeAttribute("height")
+				}
+				else{
+					bgImg.removeAttribute("width");
+					bgImg.height=""+bodyHeight+"";
+				}
+			}
+		}
+		</script>
+
+		<div id="ImpURL" class="adjust">
+			<h1>批量添加书签</h1>
+			<h1 id="ImpURLsubmit">确定</h1>
+			<textarea id="URLtext" placeholder="百度
+https://www.baidu.com或
+https://www.baidu.com
+百度" spellcheck="false" style="margin-bottom: 20px;"></textarea>
+			<span id="manageDiv" class="inputDiv" style="transition: 0s;">管理书签</span>
+		</div>
+		<script type="text/javascript">
+			var ImpURLDiv=document.getElementById('ImpURLDiv');
+			var ImpURL=document.getElementById('ImpURL');
+			ImpURLDiv.onclick=function(){
+				ImpURL.style.display="block";
+				customPage1.style.display="none";
+				markHeight.min = -(scPosition.offsetHeight/document.body.offsetHeight)*100;
+			}
+
+			var URLtext=document.getElementById('URLtext');
+			var ImpURLsubmit=document.getElementById('ImpURLsubmit');
+			ImpURLsubmit.onclick=function(){
+				if(manageDiv.className.indexOf('autoChecked')!=-1){
+					if(URLtext.value.length>0){
+						document.getElementById('bookmarker').innerHTML="";
+						setMark(URLtext.value);
+						localStorage.setItem('mark',manipulation(URLtext.value));
+					}else{
+						if(confirm("！！！是否清除书签")){
+							document.getElementById('bookmarker').innerHTML="";
+							setMark("");
+							localStorage.setItem('mark',"");
+						}
+					}
+				}else{
+					if(URLtext.value.length>0 && localStorage.getItem('mark')){
+						setMark(URLtext.value);
+						var endvalue=localStorage.getItem('mark')+"\n"+manipulation(URLtext.value);
+						console.log(endvalue);
+						localStorage.setItem('mark',endvalue);
+					};
+					if(URLtext.value.length>0 && !localStorage.getItem('mark')){
+						setMark(URLtext.value);
+						localStorage.setItem('mark',manipulation(URLtext.value));
+					}
+				}
+			}
+
+			function setMark(value){
+				var URLArr = value.split(/[\r\n]+/);
+				// console.log(URLArr,URLArr.length>=2);
+
+				if(URLArr.length>=2){
+					if(URLArr[0].indexOf(".")!=-1){
+						for(i=0;i<=URLArr.length-2;i+=2){
+							document.getElementById('bookmarker').innerHTML+="<a href='"+URLArr[i]+"'"+'><span>'+URLArr[i+1]+'</span></a>';
+						}
+					}
+					else{
+						for(i=0;i<=URLArr.length-2;i+=2){
+							document.getElementById('bookmarker').innerHTML+="<a href='"+URLArr[i+1]+"'"+'><span>'+URLArr[i]+'</span></a>';
+						}
+					}
+				}
+			}
+
+			function manipulation(value){
+				var transvalue="";
+				var URLArr = value.split(/[\r\n]+/);
+
+				if(URLArr.length>=2 && URLArr[0].indexOf(".")==-1){
+					for(i=0;i<URLArr.length-1;i+=2){
+						transvalue += URLArr[i+1]+"\n"+URLArr[i]+"\n";
+					};
+
+					value = transvalue;
+				}
+
+				console.log(value);
+				return value;
+			}
+
+			var manageDiv = document.getElementById('manageDiv');
+			manageDiv.onclick=function(){
+				if (manageDiv.className.indexOf('autoChecked')!=-1) {
+					URLtext.value="";
+					manageDiv.classList.remove('autoChecked');
+					ImpURL.getElementsByTagName('h1')[0].innerHTML="批量添加书签";
+				}else{
+					URLtext.value=localStorage.getItem('mark');
+					manageDiv.classList.add('autoChecked');
+					ImpURL.getElementsByTagName('h1')[0].innerHTML="管理书签";
+				}
+			}
+
+			URLtext.addEventListener('keydown',function(e){
+				// console.log(e.keyCode);
+				if(e.keyCode == 9){
+					e.preventDefault();
+					var indent = '	';
+					var start = this.selectionStart;
+					var end = this.selectionEnd;
+					var selected = window.getSelection().toString();
+					selected = indent + selected.replace(/\n/g,'\n'+indent);
+					this.value = this.value.substring(0,start) + selected + this.value.substring(end);
+					this.setSelectionRange(start+indent.length,start+selected.length);
+				}
+
+				if(e.keyCode == 13){
+					e.preventDefault();
+					var indent = '\n';
+					var start = this.selectionStart;
+					var end = this.selectionEnd;
+					var selected = window.getSelection().toString();
+					selected = indent + selected.replace(/\n/g,'\n'+indent);
+					this.value = this.value.substring(0,start) + selected + this.value.substring(end);
+					this.setSelectionRange(start+indent.length,start+selected.length);
+				}
+			});
+		</script>
+
+		<style>
+			.adjust{
+				display: none;
+				position: absolute;
+				top: 0;
+				width: 84%;
+				margin: 50px 8% 0;
+			}
+
+			.customPagePC .adjust{
+				margin: 20px 8% 0;
+			}
+
+			.adjust h1{
+				display: initial;
+				float: left;
+				margin: 0 0 10px 0;
+				font-size: 14px;
+				text-shadow: 0 0 4px #fff;
+				cursor: pointer;
+                transition: none;
+			}
+
+			#adjust h1:nth-child(2),
+			#adjust h1:nth-child(6),
+			#more h1:nth-child(2),
+			#ImpURL h1:nth-child(2){
+				float: right;
+			}
+
+			#adjust h1:nth-child(5),
+			#adjust h1:nth-child(6){
+				margin: 20px 0 10px 0;
+			}
+
+			.dark .adjust h1{
+				color: #fff;
+				text-shadow: none;
+			}
+
+			.h1c{
+				color: #400af4;
+			}
+
+			.dark .adjust .h1c{
+				color: #ff3539;
+			}
+
+			textarea{
+				width: 100%;
+				height: 300px;
+				padding: 10px;
+				border-radius: 10px;
+				outline: none;
+				border: none;
+				transition: none;
+			}
+
+			.dark textarea{
+				color: #bfc4c5;
+				background-color: rgba(102, 102, 102, 0.56);
+			}
+
+			textarea::-webkit-scrollbar{
+				width: 8px;
+			}
+
+			textarea::-webkit-scrollbar-thumb{
+				min-height: 30px;
+				border-radius:10px;
+				background-color: rgba(0, 0, 0, 0.15);
+			}
+
+			textarea::-webkit-scrollbar-track{
+				background-color: transparent;
+			}
+
+			textarea::-webkit-scrollbar-button{
+				height: 10px;
+			}
+
+			h1{
+				-moz-user-select: none;
+				-ms-user-select: none;
+				-webkit-user-select: none;
+				user-select: none;
+			}
+
+			.adjust h1:active{
+				/*transform: scale(.6,.6);*/
+				color: #f00;
+			}
+		</style>
+		<div id="adjust" class="adjust" style="display: none;">
+			<h1 class="h1c">搜索框高度</h1>
+			<h1>书签高度</h1>
+			<input id="topHeight" type="range" min="0" max="100" step=".1" value="10">
+			<input id="markHeight" type="range" min="0" max="100" step=".1" value="10" style="display: none;">
+			<h1>自定义css</h1>
+			<h1 onclick="window.open('https://support.qq.com/product/175314','_blank')">讨论区</h1>
+			<textarea id="csstext" style="height: 70vh;" spellcheck="false"></textarea>
+		</div>
+		<script>
+			var adjustDiv=document.getElementById('adjustDiv');
+			var adjust=document.getElementById('adjust');
+			var csstext=document.getElementById('csstext');
+			var customPage1=document.getElementById('customPage1');
+			adjustDiv.onclick=function(){
+				adjust.style.display="inline";
+				customPage1.style.display="none";
+				topHeight.min = -(scPosition.offsetHeight/document.body.offsetHeight)*100;
+			}
+
+			var topHeight=document.getElementById('topHeight');
+			var scPosition=document.getElementsByClassName('scPosition')[0];
+			topHeight.oninput=function(){
+				scPosition.style.transition="none";
+
+				scPosition.style.top=topHeight.value+"vh";
+				setCookie("TH",topHeight.value,3600);
+			}
+
+			var markHeight=document.getElementById('markHeight');
+			var bookmarker=document.getElementById('bookmarker');
+			markHeight.oninput=function(){
+				bookmarker.style.transition="none";
+
+				bookmarker.style.top=markHeight.value+"vh";
+				setCookie("MH",markHeight.value,3600);
+			}
+
+			adjust.getElementsByTagName('h1')[0].onclick=function(){
+				topHeight.style.display="inline";
+				markHeight.style.display="none";
+				adjust.getElementsByTagName('h1')[0].className="h1c";
+				adjust.getElementsByTagName('h1')[1].className="";
+			}
+
+			adjust.getElementsByTagName('h1')[1].onclick=function(){
+				markHeight.style.display="inline";
+				topHeight.style.display="none";
+				adjust.getElementsByTagName('h1')[0].className="";
+				adjust.getElementsByTagName('h1')[1].className="h1c";
+			}
+
+			for(var i=0;i<document.getElementsByTagName('style').length;i++){
+				csstext.value+=document.getElementsByTagName('style')[i].innerHTML;
+			};
+
+			csstext.onkeyup=function(){
+				document.getElementById('customCSS').innerHTML=csstext.value;
+				localStorage.setItem('customCSS',csstext.value);
+			}
+
+			csstext.addEventListener('keydown',function(e){
+				// console.log(e.keyCode);
+				if(e.keyCode == 9){
+					e.preventDefault();
+					var indent = '\t';
+					var start = this.selectionStart;
+					var end = this.selectionEnd;
+					var selected = window.getSelection().toString();
+					selected = indent + selected.replace(/\n/g,'\n'+indent);
+					this.value = this.value.substring(0,start) + selected + this.value.substring(end);
+					this.setSelectionRange(start+indent.length,start+selected.length);
+				}
+
+				if(e.keyCode == 13){
+					e.preventDefault();
+					var indent = '\n';
+					var start = this.selectionStart;
+					var end = this.selectionEnd;
+					var selected = window.getSelection().toString();
+					selected = indent + selected.replace(/\n/g,'\n'+indent);
+					this.value = this.value.substring(0,start) + selected + this.value.substring(end);
+					this.setSelectionRange(start+indent.length,start+selected.length);
+				}
+			});
+		</script>
+
+		<div id="more" class="adjust">
+			<h1>自定义js</h1>
+			<h1>讨论区</h1>
+			<textarea style="margin-bottom: 20px;" id="jstext" spellcheck="false"></textarea>
+
+			<span id="autoChangeDiv" class="inputDiv" style="transition: 0s;">自动切换主题</span>
+			<span id="grayDiv" class="inputDiv" style="transition: 0s;display: none;">黑白</span>
+			<span id="historyDiv" class="inputDiv" style="transition: 0s;">搜索记录</span>
+			<span id="lenovoDiv" class="inputDiv" style="transition: 0s;">搜索联想</span>
+			<span id="noLogoDiv" class="inputDiv" style="transition: 0s;text-decoration: line-through;">logo</span>
+			<span id="engineManageDiv" class="inputDiv" style="transition: 0s;">搜索引擎</span>
+			<!-- <span id="iscssDiv" class="inputDiv" style="transition: 0s;">CSS</span> -->
+			<!-- <a href="https://peaer.gitee.io/c33/zan.html?v=3.2.4"><span id="zanDiv" class="inputDiv">赞</span></a> -->
+		</div>
+		<script type="text/javascript">
+			var moreDiv=document.getElementById('moreDiv');
+			var more=document.getElementById('more');
+			moreDiv.onclick=function(){
+				more.style.display="block";
+				customPage1.style.display="none";
+			};
+
+			var jstext=document.getElementById('jstext');
+			jstext.index='1';
+			jstext.onkeyup=function(){
+				if(this.index=='1'){
+					document.getElementById('customJS').innerHTML=jstext.value;
+					localStorage.setItem('customJS',jstext.value);
+				}
+			}
+
+			jstext.addEventListener('keydown',function(e){
+				if(e.keyCode == 9){
+					e.preventDefault();
+					var indent = '	';
+					var start = this.selectionStart;
+					var end = this.selectionEnd;
+					var selected = window.getSelection().toString();
+					selected = indent + selected.replace(/\n/g,'\n'+indent);
+					this.value = this.value.substring(0,start) + selected + this.value.substring(end);
+					this.setSelectionRange(start+indent.length,start+selected.length);
+				}
+
+				if(e.keyCode == 13){
+					e.preventDefault();
+					var indent = '\n';
+					var start = this.selectionStart;
+					var end = this.selectionEnd;
+					var selected = window.getSelection().toString();
+					selected = indent + selected.replace(/\n/g,'\n'+indent);
+					this.value = this.value.substring(0,start) + selected + this.value.substring(end);
+					this.setSelectionRange(start+indent.length,start+selected.length);
+				}
+			});
+
+			var logoPart = document.getElementsByClassName("logoPart")[0];
+			var logo = document.getElementsByClassName("logo")[0];
+			var autoChangeDiv = document.getElementById("autoChangeDiv");
+			var historyDiv = document.getElementById("historyDiv");
+			var lenovoDiv = document.getElementById("lenovoDiv");
+			var grayDiv = document.getElementById("grayDiv");
+			var bgImg = document.getElementById("bgImg");
+			var noLogoDiv = document.getElementById('noLogoDiv');
+			var engineManageDiv = document.getElementById("engineManageDiv");
+			var	logoNow=logo.innerHTML;
+
+			autoChangeDiv.onclick = function(){
+				if(getCookie("autoChange")){
+					autoChangeDiv.classList.remove('autoChecked');
+					removeCookie("autoChange");
+				}
+				else{
+					autoChange();
+					setCookie("autoChange",1,3600);
+				}
+			}
+
+			historyDiv.onclick = function(){
+				if(getCookie("hisD")==1){
+					historyDiv.classList.remove('autoChecked');
+					setCookie("hisD",0,3600);
+				}
+				else{
+					historyDiv.classList.add('autoChecked');
+					setCookie("hisD",1,3600);
+				}
+			}
+
+			lenovoDiv.onclick = function(){
+				if(getCookie("lenove")==1){
+					lenovoDiv.classList.remove('autoChecked');
+					setCookie("lenove",0,3600);
+				}
+				else{
+					lenovoDiv.classList.add('autoChecked');
+					setCookie("lenove",1,3600);
+				}
+			}
+
+			grayDiv.onclick = function(){
+				if(getCookie("gray")){
+					grayDiv.classList.remove('autoChecked');
+					removeCookie("gray");
+				}
+				else{
+					grayDiv.classList.add('autoChecked');
+					bgImg.style.filter="grayscale(100%) brightness(0.1)";
+					setCookie("gray",1,3600);
+				}
+			}
+
+			noLogoDiv.onclick = function(){
+				if(getCookie("nLg")){
+					noLogoDiv.classList.remove('autoChecked');
+					logoPart.style.display="block";
+					logo.innerHTML=logoNow;
+					removeCookie("nLg");
+				}
+				else{
+					noLogoDiv.classList.add('autoChecked');
+					logoPart.style.display="none";
+					logo.innerHTML="";
+					setCookie("nLg",1,3600);
+				}
+			}
+
+			engineManageDiv.onclick = function(){
+				if(this.className.indexOf('autoChecked')==-1){
+					this.classList.add('autoChecked');
+					jstext.index='2';
+					more.getElementsByTagName('h1')[0].innerHTML='自定义搜索引擎';
+					more.getElementsByTagName('h1')[1].innerHTML='确定';
+
+					jstext.placeholder=`%s或test代替搜索关键字\n搜索引擎名称后加@post为post请求\n例如：\n百度@post\nhttps://www.baidu.com/s?wd=test`;
+					jstext.value=localStorage.customEng?localStorage.customEng:'';
+				}else{
+					this.classList.remove('autoChecked');
+					jstext.index='1';
+					more.getElementsByTagName('h1')[0].innerHTML='自定义js';
+					more.getElementsByTagName('h1')[1].innerHTML='讨论区';
+
+					jstext.placeholder='';
+					jstext.value=localStorage.customJS?localStorage.customJS:'';
+				}
+			}
+
+			more.getElementsByTagName('h1')[1].addEventListener('click',function(){
+				if(jstext.index=='1'){
+					window.open('https://support.qq.com/products/175309','_blank');
+				}
+				else if(jstext.index=='2'){
+					localStorage.setItem('customEng',jstext.value);
+					setCustomEng(jstext.value);
+				}
+			})
+
+
+			function setCustomEng(value){
+				var customEngDivId = document.getElementById('customEngDivId');
+				customEngDivId.innerHTML='';
+
+				var scForm = document.getElementById('scForm');
+				if (value) {
+					var arr = value.split('\n');
+					for (let i=0;i<arr.length;i+=2) {
+
+						if(arr[i].indexOf('@post')!=-1){
+							var cl = document.createElement('li');
+							cl.innerHTML=arr[i].slice(0,arr[i].indexOf('@'));
+							customEngDivId.appendChild(cl);
+
+							cl.addEventListener('click',function(){
+								console.log(i,arr[i],arr[i+1]);
+								scForm.action=arr[i+1].split('?')[0];
+								scForm.method='post';
+
+
+								scChoice.innerHTML=`<p>${this.innerHTML.substring(0,1).toUpperCase()}</p>`;
+
+
+
+								if(arr[i+1].indexOf('&')!=-1){
+									var arr1 = arr[i+1].split('&');
+									for (var j = 0; j < arr1.length; j++) {
+										var arr2 = arr1[j].split('=');
+										if(arr2[1]=='%s' || arr2[1]=='test'){
+											scInput.name=arr2[0];
+										}else{
+											var scfi = scForm.getElementsByTagName('input');
+											for (var k = scfi.length - 1; k >= 0; k--) {
+												if(scfi[k].type=='hidden'){
+													scForm.removeChild(scfi[k])
+												}
+											}
+											var ci = document.createElement('input');
+											ci.name=arr2[0];
+											ci.value=arr2[1];
+											ci.type='hidden';
+											scForm.appendChild(ci);
+										}
+									}
+								}else{
+									scInput.name = arr[i+1].split('?')[1].split('=')[0];
+								}
+
+
+								choiceUlend.style.display='none';
+								choiceUl.style.display='none';
+								scInput.focus();
+								setCookie('csengi', i/2, 3600);
+								removeCookie('enindex');
+							})
+						}
+
+						else{
+							var cl = document.createElement('li');
+							cl.innerHTML=arr[i];
+							customEngDivId.appendChild(cl);
+
+							cl.addEventListener('click',function(){
+
+								scChoice.innerHTML=`<p>${this.innerHTML.substring(0,1).toUpperCase()}</p>`;
+
+								scForm.f='cs';
+								scForm.url=arr[i+1];
+
+								scForm.action=arr[i+1].split('?')[0];
+								scForm.method='get';
+
+								choiceUlend.style.display='none';
+								choiceUl.style.display='none';
+								scInput.focus();
+								setCookie('csengi', i/2, 3600);
+								removeCookie('enindex');
+							})
+						}
+
+
+					}
+				}
+			}
+		</script>
+	</div>
+
+	<style id="customCSS"></style>
+	<script>
+	//cookie函数
+	function setCookie(name, value, iDay){
+		var oDate=new Date();
+		oDate.setDate(oDate.getDate()+iDay);
+		document.cookie=name+'='+value+';expires='+oDate;
+	}
+
+	function getCookie(name){
+		var arr=document.cookie.split('; ');
+		for (var i = 0; i < arr.length; i++){
+			var arr2=arr[i].split('=');
+			if(arr2[0]==name){
+				return arr2[1];
+			}
+		};
+		return '';
+	}
+
+	function removeCookie(name){
+		setCookie(name,1,-1);
+	}
+
+
+
+
+	(function (){
+		var theme=getCookie("theme");
+
+		if (theme=="dark") {
+			dark();
+		}
+		else{
+			light();
+		};
+
+		if(localStorage.getItem("logoImg")){
+			var logoImg = localStorage.getItem("logoImg");
+			logo.innerHTML="<img src="+logoImg+">";
+		};
+
+		if(localStorage.getItem("bgImg")){
+			var StorageBgImg = localStorage.getItem("bgImg");
+			autoBgSize(StorageBgImg);
+			bgImg.src=""+StorageBgImg+"";
+		};
+
+		if(getCookie('autoChange')){
+			autoChange();
+		};
+
+		if(!getCookie('hisD')){
+			setCookie("hisD",1,3600);
+		};
+
+		if(getCookie('hisD')==1){
+			historyDiv.classList.add('autoChecked');
+		};
+
+		if(!getCookie('lenove')){
+			setCookie("lenove",1,3600);
+		};
+
+		if(getCookie('lenove')==1){
+			lenovoDiv.classList.add('autoChecked');
+		};
+
+		if(getCookie('nLg')){
+			logoPart.style.display="none";
+			logo.innerHTML="";
+			noLogoDiv.classList.add('autoChecked');
+		}else{
+			logoPart.className='logoPart show';
+		};
+
+		if(getCookie('TH')){
+			scPosition.style.top=getCookie('TH')+"vh";
+			topHeight.value=getCookie('TH');
+			scPosition.style.display='block';
+		}else{
+			scPosition.style.display='block';
+		};
+
+		if(getCookie('MH')){
+			bookmarker.style.top=getCookie('MH')+"vh";
+			markHeight.value=getCookie('MH');
+		};
+
+		if(localStorage.getItem("customCSS")){
+			document.getElementById("customCSS").innerHTML = localStorage.getItem("customCSS");
+			csstext.value = localStorage.getItem("customCSS");
+		};
+
+		if(localStorage.getItem("customJS")){
+			document.getElementById("customJS").innerHTML = localStorage.getItem("customJS");
+			jstext.value = localStorage.getItem("customJS");
+		};
+
+		if(localStorage.getItem("mark")){
+			setMark(localStorage.getItem("mark"));
+		};
+
+		if (localStorage.customEng) {
+			setCustomEng(localStorage.customEng);
+		}
+
+	})();
+
+
+	//dark,light函数
+	function dark(){
+		document.body.className = "dark";
+		bgImg.style.filter="grayscale(100%) brightness(0.1)";
+	}
+
+	function light(){
+		document.body.className = "";
+		bgImg.style.display="inline";
+			bgImg.style.filter="";
+	}
+
+
+	//自动切主题函数
+	function autoChange(){
+		var nowTime = new Date();
+		var hours = nowTime.getHours();
+
+		if (hours >= 18 && hours < 24) {
+			dark();
+		}
+
+		else if(hours >= 0 && hours < 6 ) {
+			dark();
+		}
+
+		else if(hours >= 6 && hours < 18 ) {
+			light();
+		}
+
+		autoChangeDiv.classList.add('autoChecked');
+	}
+
+
+	var passiveSupported = false;
+		try {
+			var options = Object.defineProperty({}, "passive", {
+				get: function() {
+					passiveSupported = true;
+				}
+			});
+			window.addEventListener("test", null, options);
+		} catch(err) {}
+		function fn() {
+			console.log("fn")
+		}
+
+	//长按函数
+	function longPress(obj,event,time){
+
+		var timeOutEvent=0;
+		obj.addEventListener('touchstart',function(){
+		timeOutEvent = setTimeout(function(){
+			timeOutEvent = 0;
+			event();
+		},time);
+		return false;
+		}, passiveSupported ? { passive: true } : false);
+
+		obj.addEventListener('touchend',function(){
+		clearTimeout(timeOutEvent);
+		return false;
+		}, passiveSupported ? { passive: true } : false);
+
+		obj.addEventListener('touchmove',function(){
+		clearTimeout(timeOutEvent);
+		timeOutEvent = 0;
+		}, passiveSupported ? { passive: true } : false);
+	};
+
+	function rightclick(obj,event){
+		obj.oncontextmenu = function(e){
+			e.preventDefault();
+		};
+		obj.onmousedown = function(e){
+			if(e.button ==2){
+			event();
+			}
+		};
+	};
+
+	longPress(logoInputDiv,clearLogo,300);
+	rightclick(logoInputDiv,clearLogo);
+
+	longPress(bgInputDiv,clearBg,300);
+	rightclick(bgInputDiv,clearBg);
+
+	longPress(autoChangeDiv,clearAuto,300);
+	rightclick(autoChangeDiv,clearAuto);
+
+	longPress(historyDiv,clearHis,300);
+	rightclick(historyDiv,clearHis);
+
+	longPress(grayDiv,clearGray,300);
+	rightclick(grayDiv,clearGray);
+
+	function clearLogo(){
+		logo.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 58.4 44.55"><g><g><path class="cls-1 cls-2" d="M22,44.53C42,44.53,58.4,37,58.4,16.91h0A17,17,0,0,0,41.4,0H16.27A16.27,16.27,0,0,0,0,16.37H0l19.31-.05A14.06,14.06,0,0,1,33.4,30.38h0A14.11,14.11,0,0,1,19.29,44.55Z"/></g></g></svg>';
+		localStorage.removeItem("logoImg");
+	}
+
+	function clearBg(){
+		bgImg.src="";
+		localStorage.removeItem("bgImg");
+	}
+
+	function clearAuto(){
+		autoChangeDiv.classList.remove('autoChecked');
+		removeCookie('autoChange');
+	}
+
+	function clearHis(){
+		historyDiv.classList.remove('autoChecked');
+		setCookie("hisD",0,3600);
+	}
+
+	function clearGray(){
+		bgImg.style.filter="";
+		grayDiv.classList.remove('autoChecked');
+		removeCookie('gray');
+	}
+
+
+
+	var scInput = document.getElementById("scInput");
+	var scSubmit = document.getElementById("scSubmit");
+	var clear = document.getElementsByClassName("clear")[0];
+	var suggest = document.getElementsByClassName("suggest")[0];
+	var searchResult = document.getElementById("searchResult");
+
+	//清除建议框内容
+	function clearContent() {
+		var size = searchResult.childNodes.length;
+		for (var i = size - 1; i >= 0; i--) {
+			searchResult.removeChild(searchResult.childNodes[i]);
+		}
+	};
+
+	var timer = null;
+	//注册输入框键盘抬起事件
+	var his=0;
+	scInput.onkeyup = function (e) {
+		if(getCookie('lenove')==1){
+			suggest.style.display = "block";
+			// // 如果输入框内容为空 清除内容且无需跨域请求
+			if (this.value.length === 0 && his==0 && e.keyCode !== 40 && e.keyCode !== 38) {
+				clearContent();
+				return;
+			}
+
+			if(this.value.length > 0){
+				his=0
+			}
+
+			if (this.timer) {
+				clearTimeout(this.timer);
+			}
+			if (e.keyCode !== 40 && e.keyCode !== 38) {
+				//函数节流优化
+				this.timer = setTimeout(()=> {
+					//创建script标签JSONP跨域
+					var script = document.createElement("script");
+					 script.src = "https://www.baidu.com/su?&wd=" + encodeURI(this.value.trim()) +
+					"&p=3&cb=handleSuggestion";
+					 document.getElementById("suggestScript").appendChild(script);
+				}, 130)
+				cc=-1;
+			};
+		}
+	};
+
+	//回调函数处理返回值
+	function handleSuggestion(res) {
+	//清空之前的数据！！
+		clearContent();
+		var result = res.s;
+		for (var i = 0; i < result.length; i++) {
+			//动态创建li标签
+			var liObj = document.createElement("li");
+			liObj.innerHTML = result[i];
+			searchResult.appendChild(liObj);
+		}
+		//自执行匿名函数--删除用于跨域的script标签
+		(function () {
+			var s = document.getElementById("suggestScript").getElementsByTagName("script");
+			for (var i = 0; i < s.length; i++) {
+				document.getElementById("suggestScript").removeChild(s[i]);
+			}
+		})()
+	}
+
+	//事件委托 点击li标签或者点击搜索按钮跳转到百度搜索页面
+	suggest.addEventListener("click", function (e) {
+		if (e.target.nodeName.toLowerCase() === 'li') {
+			var keywords = e.target.innerText;
+			scInput.value = keywords;
+			scSubmit.click();
+		}
+	}, false);
+
+	suggest.addEventListener("mouseover", function (e) {
+		if (e.target.nodeName.toLowerCase() === 'li') {
+			var size = searchResult.childNodes.length;
+			for(var a=0; a<size; a++){
+				searchResult.childNodes[a].style.backgroundColor='transparent'
+			};
+			if(document.body.className==''){
+				e.target.style.backgroundColor='#efefef';
+			}
+			else{
+				e.target.style.backgroundColor='#666';
+			}
+		}
+	}, false);
+
+
+	var cc = -1;
+
+	//事件委托 监听键盘事件
+	scInput.addEventListener("keydown", function (e) {
+		var size = searchResult.childNodes.length;
+		//键盘向下事件
+		if (e.keyCode === 40) {
+			e.preventDefault();
+			cc++;
+			if (cc == size) {
+				cc = 0;
+			}
+		}
+		//键盘向上事件
+		if (e.keyCode === 38) {
+			e.preventDefault();
+			cc--;
+			if (cc < 0) {
+				 cc = size - 1;
+			}
+		}
+		if (e.keyCode === 38 || e.keyCode === 40){
+			scInput.value = searchResult.childNodes[cc].innerText;
+
+			for(var a=0; a<size; a++){
+				searchResult.childNodes[a].style.backgroundColor='transparent'
+			};
+			if(document.body.className==''){
+				searchResult.childNodes[cc].style.backgroundColor='#efefef';
+			}
+			else{
+				searchResult.childNodes[cc].style.backgroundColor='#666';
+			};
+		};
+
+		setTimeout(function(){
+			if(scInput.value.length>0){
+				clear.style.display='inline';
+			}
+			else{
+				clear.style.display='none';
+			}
+		},100)
+
+
+	}, false);
+
+
+	//点击页面任何其他地方 搜索结果框消失
+	document.addEventListener('click',function(e){
+		if(e.target.id != 'scInput'){
+			clearContent();
+		}
+	})
+
+
+
+
+	//1、搜索框输入数据——存值
+	var scForm = document.getElementById("scForm");
+	scForm.onsubmit = function(){
+		if(getCookie("hisD")==1){
+			var name = scInput.value.replace(/\s*/g,'');
+			if(name != ''){
+				setHistoryItems(name)
+			};
+
+			if(scInput.value.length>0){
+				clear.style.display='inline';
+			}
+			else{
+				clear.style.display='none';
+			}
+
+			scInput.onfocus();
+		}
+
+		if(scForm.method=='get'){
+			switch(scForm.f){
+				case 'mr':
+					window.open(scEngData[scForm.index].url.replace('%s',scInput.value),'_blank');
+					return false;
+					break;
+				case 'cs':
+					window.open(scForm.url.replace(/%s|test/g,scInput.value),'_blank');
+					return false;
+			}
+		}
+		// else if(scForm.method=='post'){
+
+		// }
+	}
+	//2、存值方法,新的值添加在搜索历史数组首位（并且保持始终只存储10条）
+	function setHistoryItems(keyword) {
+		var historyItems = localStorage.historyItems;
+		if (!historyItems) {
+			localStorage.historyItems = keyword;
+		} else {
+				var lista = new Array()
+				lista = historyItems.split('`')
+				distinct(lista)
+				if(lista.length>10){
+					lista.splice(9)
+				}
+				historyItems = keyword + '`' + lista.filter(e => e != keyword).join('`');
+				localStorage.historyItems = historyItems;
+		}
+		list1 = localStorage.historyItems.split('`')
+		distinct(list1)
+	};
+	//3、数组去重（去除多条相同搜索数据）
+	function distinct(list) {
+		return Array.from(new Set(list))
+	}
+	//4、取值写入页面
+	scInput.onfocus = function(e){
+		if(getCookie("hisD")==1){
+			suggest.style.display = "block";
+			if(scInput.value.length===0){
+				his=1;
+
+				var str=localStorage.historyItems;
+				var s = '';
+				if(!str){
+				}
+				else{
+					list1=str.split("`");
+					if(list1.length>0){
+						clearContent();
+						for (var index = 0; index < list1.length; index++) {
+							//动态创建li标签
+							var liObj = document.createElement("li");
+							liObj.innerHTML = list1[index];
+							searchResult.appendChild(liObj);
+						}
+					}
+				}
+			}
+		}
+	};
+
+
+
+	var scChoice = document.getElementsByClassName("scChoice")[0];
+	var scChoiceFZ = document.getElementsByClassName("scChoiceFZ")[0];
+	var choiceUl = document.getElementsByClassName("choiceUl")[0];
+	var choiceUlend = document.getElementsByClassName("choiceUlend")[0];
+
+	scChoiceFZ.onclick = function(){
+		choiceUl.style.cssText="display:inline;animation:popin .3s cubic-bezier(0.25, 0.46, 0.45, 0.94);";
+		choiceUlend.style.display='inline';
+	}
+
+	choiceUlend.onclick =function(){
+		choiceUl.style.display='none';
+		choiceUlend.style.display='none';
+
+		customPageHidden();
+	}
+
+	rightclick(choiceUlend,customPageShow);
+
+	scInput.onclick = function(){
+		choiceUl.style.display='none';
+		customPage.style.display="none";
+	}
+
+	clear.onclick = function(){
+		clear.style.display='none';
+		scInput.value='';
+		scInput.focus();
+	}
+
+
+	var scEngData=[
+		{
+			name:'神马',
+			url:'https://quark.sm.cn/s?q=%s',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#400af4}</style></defs><path class="cls-1" d="M25 0a25 25 0 1025 25A25 25 0 0025 0zm13 26c0 4-2 3-5 4a4 4 0 00-4 3c0 3 1 5-4 5s-11-4-12-9a13 13 0 0115-16c6 1 10 7 10 13z"/></svg>'
+		},
+		{
+			name:'百度',
+			url:'https://www.baidu.com/s?wd=%s',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 54"><defs><style>.cls-1{fill:#3245df}</style></defs><path class="cls-1" d="M8 28c5-1 5-8 4-9 0-3-3-7-6-7-5 1-6 8-6 8-1 3 2 10 8 8zm6 13a5 5 0 000 3 3 3 0 002 2h2a2 2 0 001-2v-4a2 2 0 00-1-1h-2a4 4 0 00-2 2zm4-24c4 0 6-4 6-9s-2-8-6-8-5 4-5 8 2 9 5 9zm14 0c5 1 8-4 8-7s-2-8-5-9-7 5-7 8c-1 4 0 8 4 8zm11 21s-7-5-11-11c-5-8-12-5-15-1l-7 8c-1 1-8 5-6 12s7 7 7 7a32 32 0 0010 0 20 20 0 019 0s12 4 15-4-2-11-2-11zM23 49h-8a7 7 0 01-4-3 9 9 0 01-1-5 2 2 0 010-1 7 7 0 015-4h3a2 2 0 001-2v-2a2 2 0 012-1 2 2 0 012 1v17zm14 0h-8a2 2 0 01-1 0l-3-3v-8a2 2 0 012-2 2 2 0 011 2v7l2 1h2a2 2 0 001-2v-6a2 2 0 012-2 2 2 0 012 2v11zm13-26c0-2-2-7-7-7s-6 5-6 9c0 3 0 7 7 7s6-7 6-9z"/></svg>'
+		},
+		{
+			name:'搜狗',
+			url:'https://www.sogou.com/web?query=%s',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 54"><defs><style>.cls-1{fill:#fd6e17}</style></defs><path class="cls-1" d="M48 44a22 22 0 01-5 4 2 2 0 000 3 2 2 0 003 1 27 27 0 005-6 2 2 0 000-3 2 2 0 00-3 1zM41 18s2-3-5-5-24-1-24 8 16 9 19 11 0 4-7 4-11-4-12-1 4 6 15 6 16-5 16-8-5-7-14-10-8-4-5-5 11 1 13 1c2 1 3 1 4-1z"/><path class="cls-1" d="M38 47a22 22 0 118-9 2 2 0 001 3 2 2 0 003-1 27 27 0 10-10 11 2 2 0 001-4 2 2 0 00-3 0z"/></svg>'
+		},
+		{
+			name:'必应',
+			url:'https://cn.bing.com/search?q=%s',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37.8 54"><defs><style>.cls-1{fill:#038374}</style></defs><path class="cls-1" d="M0 0l11 4v38l15-9-7-4-5-11 24 8v12L11 54 0 48V0z"/></svg>'
+		},
+		{
+			name:'360',
+			url:'https://www.so.com/s?q=%s',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 61 54"><defs><style>.cls-2{fill:#ff9932}</style></defs><path class="cls-1" d="M27 0a27 27 0 1027 27A27 27 0 0027 0zm0 43a16 16 0 1116-16 16 16 0 01-16 16z" fill="#0fb264"/><circle class="cls-2" cx="55.7" cy="48.5" r="5.3"/><path class="cls-2" d="M27 54a27 27 0 0025-18 6 6 0 00-9-4 16 16 0 01-16 11 16 16 0 01-16-11 6 6 0 00-9 5 27 27 0 0025 17z"/></svg>'
+		},
+		{
+			name:'谷歌',
+			url:'https://www.google.com/search?q=%s',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54.4 55.5"><defs><style>.cls-1{fill:#400af4}</style></defs><path class="cls-1" d="M28 56A28 28 0 1146 7l-7 7a18 18 0 10-11 32 16 16 0 0016-13H28V23h26v5c0 15-11 28-26 28z" fill="#400af4"/></svg>'
+		},
+		{
+			name:'磁力',
+			url:'https://www.cilisql.com/search/%s/',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50.3 53.2"><defs><style>.cls-1{fill:#400af4}</style></defs><path class="cls-1" d="M50 23a5 5 0 00-2-7 5 5 0 00-7 2l-2 3 6 4a3 3 0 005-2zM35 28l-5 10a11 11 0 01-14 4 11 11 0 01-5-15l6-9a5 5 0 00-2-7 5 5 0 00-7 2l-5 9c-6 10-3 22 6 28a21 21 0 0029-7l6-10a5 5 0 00-2-7 5 5 0 00-7 2zM23 8a5 5 0 00-2-7 5 5 0 00-7 2l-2 3 6 3a3 3 0 005-1z"/></svg>'
+		},
+		{
+			name:'影视',
+			url:'https://www.pianku.li/s/go.php?q=%s',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 47.5 54"><defs><style>.cls-1{fill:#4485f3}</style></defs><path class="cls-1" d="M16 20l9 5a2 2 0 010 4l-10 6a2 2 0 01-4-2V22a3 3 0 015-2z"/><path class="cls-1" d="M46 25L4 0a3 3 0 00-4 3v48a3 3 0 004 3l42-25a3 3 0 000-4zm-11 4L8 45a2 2 0 01-3-2V12a3 3 0 015-2l25 15a3 3 0 010 4z"/></svg>'
+		},
+		{
+			name:'Magi',
+			url:'https://magi.com/search?q=%s',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 54"><defs><style>.cls-1{fill:#202025}</style></defs><circle class="cls-1" cx="27" cy="27" r="27"/><path fill="#fff" d="M32 15l-4 4 7 8H11v5h32v-5L32 15z"/></svg>'
+		},
+		{
+			name:'秘迹',
+			url:'https://mijisou.com/?q=%s&category_general=on&time_range=&language=zh-CN&pageno=1',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 83.3 132.3"><defs><style>.cls-1{fill:#333}</style></defs><path class="cls-1" d="M82 85a6 6 0 00-2-1l1-18c0-32-8-66-26-66-5 0-12 3-17 16a53 53 0 000 102c6 12 12 14 17 14 12 0 20-16 24-37a15 15 0 002-1 6 6 0 001-9zM55 12l3 2h-5l2-2zm-1 108h3a3 3 0 01-2 0 3 3 0 01-1 0zm10-14a41 41 0 110-79c3 9 5 22 5 39a166 166 0 01-1 21 30 30 0 01-6 0c-9 0-20-6-22-9a6 6 0 00-8-2 6 6 0 00-2 8 43 43 0 0036 15l-2 7z"/></svg>'
+		},
+		{
+			name:'多吉',
+			url:'https://www.dogedoge.com/results?q=%s',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36.9 45.5"><defs><style>.cls-1{fill:#2e344d}</style></defs><path class="cls-1" d="M16 46h-6A10 10 0 010 36V10A10 10 0 0110 0h6a21 21 0 0121 21v4a21 21 0 01-21 21zM10 6a3 3 0 00-4 4v26a3 3 0 004 3h6a14 14 0 0014-14v-4A14 14 0 0016 6z"/></svg>'
+		},
+		{
+			name:'头条',
+			url:'https://www.toutiao.com/search/?keyword=%s',
+			method:'get',
+			innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024.3 1024"><defs><style>.cls-1{fill:#ff3539}.cls-3{fill:#f4f4f4}</style></defs><rect x=".3" width="1024" height="1024" rx="186.2" ry="186.2" fill="#fff"/><path class="cls-1" fill="#ff3539" d="M0 239l1024-51v604L2 847 0 239z"/><path class="cls-3" d="M141 326v67l140 10v-63l-140-14zM141 434v66l140 10v-63l-140-13z"/><path class="cls-3" d="M500 541l-129 6c25-75 22-245 22-245h-65c-3-2 12 165-25 249l-203 10v57l163-8c-58 69-146 135-146 135l103-8c48-33 90-80 121-130l159-7z"/><path class="cls-3" d="M363 632l76-2 64 95-78 2-62-95zM793 611l76-3 64 95-78 3-62-95zM669 619l-79 3-59 103 79-7 59-99zM931 437c-39 0-78-5-115-14 65-37 92-70 92-70l1-66-251 11-56-24-62 95c30 26 66 47 105 64-65 20-116 28-116 28l-1 60c83-14 151-35 204-57 104 31 199 37 199 37zm-296-76l186-11c-26 19-56 36-88 50-58-20-98-39-98-39z"/><path class="cls-3" d="M931 518l-169 9v-30l-65 2v31l-166 9v56l166-7v127l65-3V585l169-8v-59z"/></svg>'
+		}
+	];
+
+	for (var i = 0; i < scEngData.length; i++) {
+		var mrScEng = document.getElementById('mrScEng');
+		mrScEng.innerHTML+=`<li>${scEngData[i].name}</li>`;
+	};
+
+	var mrScEngLi = document.getElementById('mrScEng').getElementsByTagName('li');
+	for (let i = 0; i < mrScEngLi.length; i++) {
+		mrScEngLi[i].addEventListener('click',function(){
+			scChoice.innerHTML=scEngData[i].innerHTML;
+
+			scForm.index=i;
+			scForm.f='mr'
+			scForm.method=scEngData[i].method;
+
+			if(scEngData[i].method=='post'){
+				scForm.action=scEngData[i].url;
+				if(scEngData[i].input.indexOf('&')!=-1){
+					var arr1 = scEngData[i].input.split('&');
+					for (var j = 0; j < arr1.length; j++) {
+						var arr2 = arr1[j].split('=');
+						if(arr2[1]=='%s'){
+							scInput.name=arr2[0];
+						}else{
+							var scfi = scForm.getElementsByTagName('input');
+							for (var k = scfi.length - 1; k >= 0; k--) {
+								if(scfi[k].type=='hidden'){
+									scForm.removeChild(scfi[k])
+								}
+							}
+							var ci = document.createElement('input');
+							ci.name=arr2[0];
+							ci.value=arr2[1];
+							ci.type='hidden';
+							scForm.appendChild(ci);
+						}
+					}
+				}else{
+					scInput.name=scEngData[i].input.split('=')[0];
+				}
+			}
+
+			choiceUlend.style.display='none';
+			choiceUl.style.display='none';
+			scInput.focus();
+			setCookie('enindex', i, 3600);
+			removeCookie('csengi');
+		})
+	};
+
+	if(getCookie('enindex')){
+		var enindex = getCookie('enindex');
+		try{
+			mrScEngLi[enindex].click();
+		}
+		catch(err){
+			mrScEngLi[0].click();
+		}
+	}
+	else if(getCookie('csengi')){
+		try{
+			customEngDivId.getElementsByTagName('li')[getCookie('csengi')].click();
+		}
+		catch(err){
+			mrScEngLi[0].click();
+		}
+	}
+	else{
+		mrScEngLi[0].click();
+	};
+
+	//自定义页面showhidden函数
+	var customPage = document.getElementById("customPage");
+
+	function customPageShow(){
+		customPage.style.display="block";
+		customPage1.style.display="block";
+		adjust.style.display="none";
+		ImpURL.style.display="none";
+		more.style.display="none";
+		// logoNow=logo.innerHTML;
+	}
+
+	function customPageHidden(){
+		customPage.style.display='none';
+	}
+
+	//切换主题函数
+	function changeTheme(){
+		if (document.body.className != 'dark') {
+			dark();
+			setCookie('theme', 'dark', 3600);
+		}
+		else {
+			light();
+			setCookie('theme', 'light', 3600);
+		}
+	}
+
+	//IsPc函数
+	function IsPC() {
+		var userAgentInfo = navigator.userAgent;
+		var Agents = ["Android", "iPhone",
+			"SymbianOS", "Windows Phone",
+			"iPad", "iPod"];
+		var flag = true;
+		for (var v = 0; v < Agents.length; v++) {
+		if (userAgentInfo.indexOf(Agents[v]) > 0) {
+			flag = false;
+			break;
+		}
+		}
+		return flag;
+	};
+
+	//logo
+	longPress(logo,customPageShow,250);
+	rightclick(logo,customPageShow);
+	if(IsPC()){
+		logo.onclick=function(){
+			window.open('https://peaer.gitee.io/c31/','_blank')
+		};
+		customPage.className='customPagePC';
+		suggest.style.maxHeight='310px';
+	}
+	else{
+		logo.onclick=function(){
+			window.open('folder://','_self');
+		};
+		customPage.className='customPagePh';;
+	};
+
+	//oControl
+	var oControl = document.getElementsByClassName("control")[0];
+	// longPress(oControl,customPageShow,200);
+	rightclick(oControl,customPageShow);
+	oControl.onclick = function(){
+		customPageHidden();
+	}
+	oControl.ondblclick=function(){
+		changeTheme();
+	}
+
+	// oControlTop
+	var oControlTop = document.getElementsByClassName("controlTop")[0];
+	oControlTop.ondblclick=function(){
+		changeTheme();
+	}
+	rightclick(oControlTop,customPageShow);
+	if(IsPC()){
+		oControlTop.onclick=function(){
+			customPage.style.display = "none";
+			adjust.style.display="none";
+		}
+	}
+	else{
+		oControlTop.onclick=function(){
+			customPage.style.height = "0";
+			adjust.style.display="none";
+		}
+	};
+
+	//自定义页面
+	customPage.oncontextmenu = function(e){
+		e.preventDefault();
+	};
+
+
+	rightclick(bookmarker,showBKMK);
+	bookmarker.addEventListener('click',function(e){
+		customPageHidden()
+	})
+	bookmarker.addEventListener('dblclick',function(e){
+		changeTheme()
+	})
+	function showBKMK(){
+		customPageShow();
+		ImpURLDiv.click();
+		URLtext.click();
+	}
+
+	if(!IsPC()){
+		moreDiv.addEventListener('click',function(){
+			customPage.style.height="100%";
+			customPage.style.overflow="auto";
+		});
+
+		ImpURLDiv.addEventListener('click',function(){
+			customPage.style.height="100%";
+			customPage.style.overflow="auto";
+			URLtext.focus();
+		});
+	}else{
+	    document.getElementById('bookmarker').style.paddingBottom="0";
+	};
+
+	//响应via夜间
+	document.head.addEventListener("DOMNodeInserted",function(e){
+		if(e.target.id==="via_inject_css_night"){
+			document.getElementById("via_inject_css_night").media="print";
+			dark();
+		}
+	})
+
+	document.head.addEventListener("DOMNodeRemoved",function(e){
+		if(e.target.id==="via_inject_css_night"){
+			light();
+		}
+	});
+
+
+
+
+	// customPage弹性滑动
+	var startY = 0;
+	var startT = 0;
+	var	customPageHeight = 150;
+	var	centerHeight = 0, tempHeight, csh, fullcsh, full=false;
+	var customPageReceptor = document.getElementById('customPageReceptor');
+
+	customPageReceptor.addEventListener('touchstart', function (e) {
+			startY = e.targetTouches[e.targetTouches.length-1].clientY;
+			startT = new Date();
+
+			customPage.style.display = "block";
+
+			csh=null;
+			full=false;
+			if(customPage.style.height == "100%"||customPage.offsetHeight == fullcsh){
+				full=true;
+				fullcsh=customPage.offsetHeight;
+			};
+
+	}, passiveSupported ? { passive: true } : false)
+
+	customPageReceptor.addEventListener('touchmove', function (e) {
+		customPage.style.transition = 'none';
+		var dy = -(e.targetTouches[e.targetTouches.length-1].clientY - startY);
+		if(!csh){
+			csh=customPage.offsetHeight;
+		};
+
+		tempHeight = csh + dy;
+		if (full && dy >= 0) {
+			tempHeight = csh;
+		}
+		customPage.style.height =""+tempHeight+"px";
+	}, passiveSupported ? { passive: true } : false)
+
+	customPageReceptor.addEventListener('touchend', function (e) {
+		var dy = -(e.changedTouches[0].clientY - startY);
+		if(!full){
+			if (dy > 0) {
+				customPage.style.height = "100%";
+				customPage.style.borderRadius = "0";
+				customPage.style.transition = '.3s';
+				customPage.style.transitionTimingFunction="cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+				customPage.style.overflow="auto";
+			}
+		};
+
+		if (dy < 0) {
+			hiddeno();
+		};
+
+		deltaT = new Date() - startT;
+		if(deltaT < 300 && dy <= -20){
+			hiddent();
+		};
+
+		function hiddeno(){
+			customPage.style.transition = '.5s'
+			customPage.style.height = "0px";
+
+			customPageMask.style.display = "none";
+		};
+
+		function hiddent(){
+			customPage.style.transition = '.3s';
+			customPage.style.height = "0px";
+			customPage.style.transitionTimingFunction="cubic-bezier(0, 0, 0.2, 1)";
+			customPageMask.style.display = "none";
+		};
+	}, passiveSupported ? { passive: true } : false)
+
+	// oControl弹性滑动
+	var upBounce =30;
+	var customPageMask = document.getElementById("customPageMask");
+	customPageMask.onclick = function(){
+		customPage.style.transition = '.35s';
+		customPage.style.height = "0px";
+		this.style.display = "none";
+	}
+	oControl.addEventListener('touchstart', function (e) {
+		if( e.changedTouches.length=1 ){
+			customPage.style.display = "inline";
+			customPage.style.height = "0";
+
+			customPage1.style.display = "block";
+
+			startY = e.changedTouches[0].clientY;
+			startT = new Date();
+
+			customPageMask.style.display = "inline";
+
+			adjust.style.display="none";
+			more.style.display="none";
+			ImpURL.style.display="none";
+			customPage.style.borderRadius = "8px 8px 0 0";
+			customPage.style.overflow="";
+		}
+	}, passiveSupported ? { passive: true } : false)
+
+	oControl.addEventListener('touchmove', function (e) {
+		e.preventDefault;
+		if( e.changedTouches.length==1 ){
+
+		customPage.style.transition = 'none';
+		var dy = -(e.changedTouches[0].clientY - startY);
+		var tempHeight = dy;
+
+		if (dy >= customPageHeight) {
+		dy = dy - customPageHeight;
+			tempHeight = customPageHeight + dy/3;
+		};
+		if (dy < 0) {
+			tempHeight = 0;
+
+		}
+		customPage.style.height =""+tempHeight+"px";
+		};
+		if( e.changedTouches.length > 1 ){
+			customPage.style.transition = '.5s';
+			customPage.style.height = "0px";
+		}
+	}, passiveSupported ? { passive: true } : false)
+
+	oControl.addEventListener('touchend', function (e) {
+		var dy = -(e.changedTouches[0].clientY - startY);
+
+		if (dy > 50) {
+			showo();
+		};
+
+		if (dy <= 50) {
+			hidden();
+		};
+		deltaT = new Date() - startT;
+		if(deltaT < 300 && dy > 30){
+			showt();
+		};
+
+		function hidden(){
+			customPage.style.transition = '.4s';
+			customPage.style.height = "0px";
+
+			customPageMask.style.display = "none";
+		};
+
+		function showo(){
+			customPage.style.transition = '.2s';
+			customPage.style.height = ""+customPageHeight+"px";
+
+			customPage.style.display = "inline";
+		};
+
+		function showt(){
+			var tempHeight = customPageHeight + upBounce;
+			customPage.style.height = ""+tempHeight+"px";
+			customPage.style.transition = '.2s';
+			this.timer=setTimeout(function(){
+				customPage.style.height = ""+customPageHeight+"px";
+				clearTimeout(this.timer);
+			},200);
+
+			customPage.style.display = "inline";
+		}
+	}, passiveSupported ? { passive: true } : false)
+
+
+
+
+
+
+
+
+
+
+	function ctoast(v,t){
+		if(!document.getElementById('toastid')){
+			var cd = document.createElement('div');
+			cd.id='toastid';
+			document.body.appendChild(cd);
+
+			var toastid = document.getElementById('toastid');
+			t = t==null ? 2 : t;
+			if(t=='no'){
+				toastid.style.animation='none';
+				t=100000
+			}else{
+				toastid.style.animation=`toasts ${t}s forwards`;
+			};
+			document.head.innerHTML+=`
+			<style>
+				#toastid {
+					position: fixed;
+					bottom: 120px;
+					left:50%;
+					transform: translateX(-50%);
+					padding: 15px;
+					border-radius: 40px;
+					font-size: 14px;
+					background-color: rgba(0,0,0,.7);
+					color: #fff;
+					z-index: 99;
+					animation: toasts ${t}s forwards;
+				}
+
+				@keyframes toasts{
+					0%{
+						opacity:0;
+						transform:translate(-50%,5px);
+					}
+					10%{
+						opacity:1;
+						transform:translate(-50%,0);
+					}
+					90%{
+						opacity:1;
+						transform:translate(-50%,0);
+					}
+					100%{
+						opacity:0;
+						transform:translate(-50%,5px);
+					}
+				}
+			</style>`;
+		}
+		toastid.innerHTML=v;
+		clearTimeout(ctTime);
+		toastid.style.display='block';
+
+		var ctTime = setTimeout(function(){
+			toastid.style.display='none';
+		},1000*t);
+	};
+
+	if(!IsPC()){
+		if(getCookie("gx")!=2){
+			ctoast(
+				`<div style='line-height: 22px;'>
+					双击切换主题、底部上滑自定义、长按自定义选项恢复默认、自定义基于网页存储和Cookie<br>
+					<div onclick="toastid.style.display='none';
+			setCookie('gx',2,3600)" style="cursor:pointer;float:left;text-decoration:underline">关闭</div>
+					<a href='https://www.coolapk.com/feed/17247405?shareKey=Y2YxNWU1OGVlOTgwNWU3MWE0NzE~&shareUid=732658&shareFrom=com.coolapk.market_10.0' style='color:#fff;'>
+						<div style='float:right;'>酷安@HiEarth<div>
+					</a>
+				<div>`
+			,'no');
+		}
+	}
+
+	else{
+		if(getCookie("gx")!=2){
+			ctoast(
+				`<div style='line-height: 22px;'>
+					双击切换主题、右击自定义、右击自定义选项恢复默认、自定义基于网页存储和Cookie<br>
+					<div onclick="toastid.style.display='none';
+			setCookie('gx',2,3600)" style="cursor:pointer;float:left;text-decoration:underline">关闭</div>
+					<a href='https://www.coolapk.com/feed/17247405?shareKey=Y2YxNWU1OGVlOTgwNWU3MWE0NzE~&shareUid=732658&shareFrom=com.coolapk.market_10.0' style='color:#fff;'>
+						<div style='float:right;'>酷安@HiEarth<div>
+					</a>
+				<div>`
+			,'no');
+		}
+	};
+
+	</script>
+	<script>
+	var version = '3.2.13';
+	(function() {
+	var sf = document.createElement("script");
+	sf.src = "update.js?"+Math.random()+"";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(sf, s);
+	})();
+	</script>
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?0604330f7251bf4b3a643de8e16b8052";
+	var s = document.getElementsByTagName("script")[0];
+	s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+</body></html>
