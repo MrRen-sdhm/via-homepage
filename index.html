@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=10.0,user-scalable=0">
     <title>主页</title>
     <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
-    <base target="_blank">
+    <base target="_self">
 <style>
 /*
 1.如遇问题请尝试ctrl+shift+i>应用程序>本地存储>右击删除customCSS>刷新;
@@ -236,7 +236,7 @@ input::-webkit-input-placeholder {
     top: 55px;
     left: 25px;
     z-index: 100;
-    width: 200px;
+    width: 170px; /*搜索选择框宽度*/
     padding: 10px;
     border-radius: 8px;
     background-color: #fff;
@@ -624,7 +624,7 @@ input[type=range]::-ms-fill-upper {
                 <dir id="customEngDivId"></dir>
             </ul>
 
-            <form id="scForm" action="https://quark.sm.cn/s" method="get" target="_blank">
+            <form id="scForm" action="https://quark.sm.cn/s" method="get" target="_self">
 
                 <input id="scInput" type="text" name="q" autocomplete="off">
 
@@ -951,7 +951,7 @@ https://www.baidu.com
             <input id="topHeight" type="range" min="0" max="100" step=".1" value="10">
             <input id="markHeight" type="range" min="0" max="100" step=".1" value="10" style="display: none;">
             <h1>自定义css</h1>
-            <!-- <h1 onclick="window.open('https://support.qq.com/product/175314','_blank')">讨论区</h1> -->
+            <!-- <h1 onclick="window.open('https://support.qq.com/product/175314','_self')">讨论区</h1> -->
             <textarea id="csstext" style="height: 70vh;" spellcheck="false"></textarea>
         </div>
         <script>
@@ -1180,7 +1180,7 @@ https://www.baidu.com
 
             more.getElementsByTagName('h1')[1].addEventListener('click',function(){
                 if(jstext.index=='1'){
-                    window.open('https://support.qq.com/products/175309','_blank');
+                    window.open('https://support.qq.com/products/175309','_self');
                 }
                 else if(jstext.index=='2'){
                     localStorage.setItem('customEng',jstext.value);
@@ -1801,12 +1801,12 @@ https://www.baidu.com
             method:'get',
             innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37.8 54"><defs><style>.cls-1{fill:#038374}</style></defs><path class="cls-1" d="M0 0l11 4v38l15-9-7-4-5-11 24 8v12L11 54 0 48V0z"/></svg>'
         },
-        {
-            name:'头条',
-            url:'https://www.toutiao.com/search/?keyword=%s',
-            method:'get',
-            innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024.3 1024"><defs><style>.cls-1{fill:#ff3539}.cls-3{fill:#f4f4f4}</style></defs><rect x=".3" width="1024" height="1024" rx="186.2" ry="186.2" fill="#fff"/><path class="cls-1" fill="#ff3539" d="M0 239l1024-51v604L2 847 0 239z"/><path class="cls-3" d="M141 326v67l140 10v-63l-140-14zM141 434v66l140 10v-63l-140-13z"/><path class="cls-3" d="M500 541l-129 6c25-75 22-245 22-245h-65c-3-2 12 165-25 249l-203 10v57l163-8c-58 69-146 135-146 135l103-8c48-33 90-80 121-130l159-7z"/><path class="cls-3" d="M363 632l76-2 64 95-78 2-62-95zM793 611l76-3 64 95-78 3-62-95zM669 619l-79 3-59 103 79-7 59-99zM931 437c-39 0-78-5-115-14 65-37 92-70 92-70l1-66-251 11-56-24-62 95c30 26 66 47 105 64-65 20-116 28-116 28l-1 60c83-14 151-35 204-57 104 31 199 37 199 37zm-296-76l186-11c-26 19-56 36-88 50-58-20-98-39-98-39z"/><path class="cls-3" d="M931 518l-169 9v-30l-65 2v31l-166 9v56l166-7v127l65-3V585l169-8v-59z"/></svg>'
-        }
+        // {
+        //     name:'头条',
+        //     url:'https://www.toutiao.com/search/?keyword=%s',
+        //     method:'get',
+        //     innerHTML:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024.3 1024"><defs><style>.cls-1{fill:#ff3539}.cls-3{fill:#f4f4f4}</style></defs><rect x=".3" width="1024" height="1024" rx="186.2" ry="186.2" fill="#fff"/><path class="cls-1" fill="#ff3539" d="M0 239l1024-51v604L2 847 0 239z"/><path class="cls-3" d="M141 326v67l140 10v-63l-140-14zM141 434v66l140 10v-63l-140-13z"/><path class="cls-3" d="M500 541l-129 6c25-75 22-245 22-245h-65c-3-2 12 165-25 249l-203 10v57l163-8c-58 69-146 135-146 135l103-8c48-33 90-80 121-130l159-7z"/><path class="cls-3" d="M363 632l76-2 64 95-78 2-62-95zM793 611l76-3 64 95-78 3-62-95zM669 619l-79 3-59 103 79-7 59-99zM931 437c-39 0-78-5-115-14 65-37 92-70 92-70l1-66-251 11-56-24-62 95c30 26 66 47 105 64-65 20-116 28-116 28l-1 60c83-14 151-35 204-57 104 31 199 37 199 37zm-296-76l186-11c-26 19-56 36-88 50-58-20-98-39-98-39z"/><path class="cls-3" d="M931 518l-169 9v-30l-65 2v31l-166 9v56l166-7v127l65-3V585l169-8v-59z"/></svg>'
+        // }
     ];
 
     for (var i = 0; i < scEngData.length; i++) {
@@ -1928,8 +1928,8 @@ https://www.baidu.com
     rightclick(logo,customPageShow);
     if(IsPC()){
         logo.onclick=function(){
-            // window.open('https://peaer.gitee.io/c31/','_blank')
-            window.open('https://baidu.com','_blank')
+            // window.open('https://peaer.gitee.io/c31/','_self')
+            window.open('https://baidu.com','_self')
         };
         customPage.className='customPagePC';
         suggest.style.maxHeight='310px';
